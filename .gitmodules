@@ -1,0 +1,3 @@
+[submodule "src/loggregator-release"]
+	path = src/loggregator-release
+	url = https://github.com/cloudfoundry/loggregator-release

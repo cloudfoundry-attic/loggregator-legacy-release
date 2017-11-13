@@ -1,0 +1,33 @@
+#!/bin/bash
+
+PROJECT_DIR="$(cd "$(dirname "$0")/.."; pwd)"
+
+cd $PROJECT_DIR
+
+LOGGR_REL_DIR=$PROJECT_DIR/src/loggregator-release/releases/loggregator
+DEST_REL_DIR=$PROJECT_DIR/releases/loggregator
+
+echo "Linking all loggregator-99 final releases"
+
+v99_releases=`ls $LOGGR_REL_DIR | grep loggregator-99`
+
+for rel in $v99_releases;
+do
+    echo "Linking $rel..."
+    rm -f $DEST_REL_DIR/$rel
+    ln $LOGGR_REL_DIR/$rel $DEST_REL_DIR/$rel
+    echo "Done linking $rel."
+done
+
+echo "Populating index.yml"
+
+echo "builds:" > $DEST_REL_DIR/index.yml
+cat $LOGGR_REL_DIR/index.yml | grep -B1 "version: \"99" >> $DEST_REL_DIR/index.yml
+
+echo "Grabbing .final_builds"
+rm -rf .final_builds
+cp -r src/loggregator-release/.final_builds .final_builds
+
+echo "Grabbing config"
+rm -rf config/
+cp -r src/loggregator-release/config config
